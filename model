@@ -1,0 +1,35 @@
+class UserModel:
+    def __init__(self):
+        self.weight = 0
+        self.height = 0
+        self.gender = ""
+        self.age = 0
+        self.activity_level = ""
+
+    def set_weight(self, weight):
+        self.weight = weight
+
+    def set_height(self, height):
+        self.height = height
+
+    def set_gender(self, gender):
+        self.gender = gender
+
+    def set_age(self, age):
+        self.age = age
+
+    def set_activity_level(self, activity_level):
+        self.activity_level = activity_level
+
+    def calculate_bmr(self):
+        if self.gender == "Female":
+            bmr = 655 + (9.6 * self.weight) + (1.8 * self.height) - (4.7 * self.age)
+        else:
+            bmr = 66 + (13.7 * self.weight) + (5 * self.height) - (6.8 * self.age)
+        return bmr
+
+    def calculate_calories(self):
+        activity_multipliers = {"Низкий": 1.2, "Средний": 1.55, "Высокий": 1.9}
+        bmr = self.calculate_bmr()
+        total_calories = bmr * activity_multipliers.get(self.activity_level, 1.55)
+        return total_calories
