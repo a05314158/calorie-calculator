@@ -1,0 +1,89 @@
+import tkinter as tk
+
+class UserView(tk.Frame):
+    def __init__(self, master=None):
+        super().__init__(master)
+        self.model = None
+        self.activity_var = tk.StringVar()
+        self.gender_var = tk.StringVar()
+        self.entry_weight = None
+        self.entry_height = None
+        self.entry_age = None
+        self.create_widgets()
+
+    def set_model(self, model):
+        self.model = model
+
+    def create_widgets(self):
+        self.configure(bg="#fce4ec")
+
+        label_title = tk.Label(self, text="Калькулятор калорий", font=("Helvetica", 20), bg="#f48fb1", fg="white", pady=10)
+        label_title.pack(fill=tk.X)
+
+        label_instruction = tk.Label(self, text="Введите данные и выберите пол:", font=("Helvetica", 12), bg="#f06292", fg="white")
+        label_instruction.pack(pady=10)
+
+        label_weight = tk.Label(self, text="Вес (кг):", font=("Helvetica", 12), bg="#f06292", fg="white")
+        label_weight.pack()
+
+        self.entry_weight = tk.Entry(self, font=("Helvetica", 12))
+        self.entry_weight.pack()
+
+        label_height = tk.Label(self, text="Рост (см):", font=("Helvetica", 12), bg="#f06292", fg="white")
+        label_height.pack()
+
+        self.entry_height = tk.Entry(self, font=("Helvetica", 12))
+        self.entry_height.pack()
+
+        label_gender = tk.Label(self, text="Пол:", font=("Helvetica", 12), bg="#f06292", fg="white")
+        label_gender.pack()
+
+        gender_options = ["Мужчина", "Женщина"]
+        gender_menu = tk.OptionMenu(self, self.gender_var, *gender_options)
+        gender_menu.config(font=("Helvetica", 12), bg="#ec407a", fg="white")
+        gender_menu.pack()
+
+        label_age = tk.Label(self, text="Возраст:", font=("Helvetica", 12), bg="#ec407a", fg="white")
+        label_age.pack()
+
+        self.entry_age = tk.Entry(self, font=("Helvetica", 12))
+        self.entry_age.pack()
+
+        label_activity = tk.Label(self, text="Уровень активности:", font=("Helvetica", 12), bg="#ec407a", fg="white")
+        label_activity.pack()
+
+        activity_levels = ["Низкий", "Средний", "Высокий"]
+        activity_menu = tk.OptionMenu(self, self.activity_var, *activity_levels)
+        activity_menu.config(font=("Helvetica", 12), bg="#d81b60", fg="white")
+        activity_menu.pack()
+
+        submit_button = tk.Button(self, text="Рассчитать калории", command=self.calculate_calories, bg="#c2185b", fg="white", font=("Helvetica", 14), pady=10)
+        submit_button.pack()
+
+        exit_button = tk.Button(self, text="Выход", command=self.master.destroy, bg="#e91e63", fg="white", font=("Helvetica", 14), pady=10)
+        exit_button.pack(side=tk.BOTTOM, fill=tk.X)
+
+    def calculate_calories(self):
+        if self.model:
+            try:
+                weight = float(self.entry_weight.get())
+                height = float(self.entry_height.get())
+                age = int(self.entry_age.get())
+                gender = self.gender_var.get().lower()
+                activity_level = self.activity_var.get()
+
+                self.model.set_weight(weight)
+                self.model.set_height(height)
+                self.model.set_age(age)
+                self.model.set_gender(gender)
+                self.model.set_activity_level(activity_level)
+
+                calories = self.model.calculate_calories()
+                result_text = f"Ожидаемое количество калорий: {calories:.2f} ккал в день"
+                self.show_result(result_text)
+            except ValueError:
+                self.show_result("Пожалуйста, введите корректные данные")
+
+    def show_result(self, result_text):
+        result_label = tk.Label(self, text=result_text, font=("Helvetica", 14), bg="#ffcdd2", fg="#d32f2f", pady=10)
+        result_label.pack()
